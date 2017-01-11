@@ -1,0 +1,36 @@
+{
+  "name": "unicorn-tears",
+  "version": "1.0.0",
+  "author": "Jaclyn Tan <jaclyn@monk.com.au>",
+  "description": "It's magic",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:monkstudio/_unicorn-tears.git"
+  },
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "browser-sync": "*",
+    "gulp": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-bower-files": "*",
+    "gulp-bower-normalize": "*",
+    "gulp-clean-css": "*",
+    "gulp-concat": "*",
+    "gulp-fontello": "*",
+    "gulp-if": "*",
+    "gulp-imagemin": "*",
+    "gulp-install": "*",
+    "gulp-main-bower-files": "*",
+    "gulp-plumber": "*",
+    "gulp-real-favicon": "*",
+    "gulp-rename": "*",
+    "gulp-sass": "*",
+    "gulp-shell": "*",
+    "gulp-uglify": "*",
+    "psi": "*",
+    "sprity": "*",
+    "sprity-sass": "*",
+    "yargs": "*"
+  },
+  "license": "ISC"
+}
