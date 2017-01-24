@@ -56,7 +56,7 @@ var gulp = require("gulp"),
     project = args.project || "base",
     theme = args.theme || "unicorn-tears",
     url = project + ".mnk.nu";
-    //set cwd 
+    //set cwd
 if (args.theme === 'monk3') {
     var cwd = "../../../" + project + "/public_html/app/themes/" + theme;
 } else if (args.project === "base-holding") {
@@ -64,7 +64,6 @@ if (args.theme === 'monk3') {
 } else {
     var cwd = "../../../" + project + "/public_html/wp-content/themes/" + theme;
 }
-
 // File where the favicon markups are stored
 var FAVICON_DATA_FILE = cwd + '/faviconData.json';
 /*! 
@@ -271,7 +270,7 @@ gulp.task("bowerinstall", function () {
 //secondly-- get the js from bower and do a 💩 in main js folder
 gulp.task("bower", ['bowerinstall'], function () {
     return gulp.src(bower({includeDev: true, filter: ["**/*.js", "!**/*.min.js", "!**/*/bootstrap.js", "!**/*/jquery.js"], paths: cwd }))
-        .pipe(gulp.dest(cwd + "/js/-vendor"))
+        .pipe(gulp.dest(cwd + "/js/vendor"))
         .on("end", function () {
             gutil.log(gutil.colors.green("🐤 Bower birds are every unicorn\'s annoying best friend 🐝 "));
         });
@@ -279,15 +278,15 @@ gulp.task("bower", ['bowerinstall'], function () {
 //thirdly-- process js folder and output script.js and script.min.js in project root
 gulp.task("scripts", function () {
     return gulp.src([
+        "!" + cwd + "/js/**/_*/**",
+        "!" + cwd + "/js/**/_*.js",
         cwd + "/js/**/!(base)*.js",
-        cwd + "/js/base.js",
-        "!" + cwd + "/js/_**/*.js",
-        "!" + cwd + "/js/**/_*.js"
+        cwd + "/js/base.js"
     ])
-        .pipe(plumber({
+         .pipe(plumber({
             errorHandler: function (error) {
                 gutil.log(gutil.colors.red("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-                gutil.log(gutil.colors.red(error.message));
+                gutil.log(gutil.colors.red(error));
                 this.emit("end");
             }
         }))
@@ -320,6 +319,7 @@ Basically the sparkly eye of sauron
 */
 
 gulp.task("default", ["browser-sync"], function () {
+    console.log(cwd);
     gulp.watch(cwd + "/bower.json", ["bower"]);
     gulp.watch("./package.json", ["npm"]);
 //    gulp.watch(cwd + "/images/-dump/favicon.*", ["favicons"]); 
@@ -387,7 +387,7 @@ gulp.task('favicon-update', function (done) {
     
     var realFavicon = require('gulp-real-favicon'),
 	    currentVersion = JSON.parse(fs.readFileSync(FAVICON_DATA_FILE)).version;
-    
+        
 	realFavicon.checkForUpdates(currentVersion, function (err) {
 		if (err) {
 			throw err;
