@@ -59,7 +59,7 @@ var gulp = require("gulp"),
     //set cwd
 if (args.theme === 'monk3') {
     var cwd = "../../../" + project + "/public_html/app/themes/" + theme;
-} else if (args.project === "base-holding") {
+} else if (args.theme === "holding") {
     var cwd = "../../../" + project + "/public_html";
 } else {
     var cwd = "../../../" + project + "/public_html/wp-content/themes/" + theme;
