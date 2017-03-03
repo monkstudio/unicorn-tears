@@ -13,7 +13,6 @@
     "gulp": "*",
     "gulp-autoprefixer": "*",
     "gulp-bower-files": "*",
-    "gulp-bower-normalize": "*",
     "gulp-clean-css": "*",
     "gulp-concat": "*",
     "gulp-fontello": "*",

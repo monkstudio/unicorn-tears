@@ -1,4 +1,4 @@
-/*jslint node:true */
+ /*jslint node:true */
 
 "use strict";
 /*
@@ -55,11 +55,11 @@ var gulp = require("gulp"),
     //get args
     project = args.project || "base",
     theme = args.theme || "unicorn-tears",
-    url = project + ".mnk.nu";
+    url = project + ".mnk.nu",
+    port = args.port || "3000";
+
     //set cwd
-if (args.theme === 'monk3') {
-    var cwd = "../../../" + project + "/public_html/app/themes/" + theme;
-} else if (args.theme === "holding") {
+if (args.theme === "holding") {
     var cwd = "../../../" + project + "/public_html";
 } else {
     var cwd = "../../../" + project + "/public_html/wp-content/themes/" + theme;
@@ -93,8 +93,9 @@ gulp.task("browser-sync", function () {
                 display: 'block',
                 backgroundColor: 'rgba(60, 197, 31, 0.5)'
             }
-        }
-//        online: false
+        },
+        port: port,
+        open: false
     });
     gutil.log(gutil.colors.green.bold("🌠 💝 Welcome to the wonderful bs world of"), gutil.colors.yellow.bold("~ unicorns ~"), gutil.colors.green.bold("( ˘ ³˘)💝 🌈 "));
 });
@@ -231,11 +232,12 @@ gulp.task("scss", function () {
         .pipe(gulp.dest(cwd))
         .pipe(browserSync.reload({
             stream: true
-        }));
+        }))
 });
 
 //secondly-- compile minified style.min.css to project root
 gulp.task("styles", ["scss"], function () {
+    
     return gulp.src(cwd + "/style.css")
         .pipe(rename({ suffix: ".min" }))
         .pipe(cleanCSS({ debug: true }, function (details) {
@@ -243,8 +245,20 @@ gulp.task("styles", ["scss"], function () {
             gutil.log(gutil.colors.green(details.name + "(minified file size): " + details.stats.minifiedSize));
         }))
         .pipe(gulp.dest(cwd))
+//        .pipe(browserSync.reload({
+//            stream: true
+//        }))
         .on("end", function () {
             gutil.log(gutil.colors.white("👑 Unicorns need them"), gutil.colors.blue("s"), gutil.colors.yellow("t"), gutil.colors.green("y"), gutil.colors.gray("l"), gutil.colors.red("e"), gutil.colors.cyan("s"), gutil.colors.white("to turn into dragons 🐲"));
+        });
+});
+
+//move scss from bower if you're feeling lazy
+gulp.task("movecss", function () {
+    return gulp.src(cwd + "/bower_components/**/*.scss")
+        .pipe(gulp.dest(cwd + "/scss/vendor"))
+        .on("end", function () {
+            gutil.log(gutil.colors.cyan("🎉 Cloning complete 🎉 "));
         });
 });
 
@@ -270,7 +284,7 @@ gulp.task("bowerinstall", function () {
 //secondly-- get the js from bower and do a 💩 in main js folder
 gulp.task("bower", ['bowerinstall'], function () {
     return gulp.src(bower({includeDev: true, filter: ["**/*.js", "!**/*.min.js", "!**/*/bootstrap.js", "!**/*/jquery.js"], paths: cwd }))
-        .pipe(gulp.dest(cwd + "/js/vendor"))
+        .pipe(gulp.dest(cwd + "/js/-vendor"))
         .on("end", function () {
             gutil.log(gutil.colors.green("🐤 Bower birds are every unicorn\'s annoying best friend 🐝 "));
         });
@@ -319,7 +333,11 @@ Basically the sparkly eye of sauron
 */
 
 gulp.task("default", ["browser-sync"], function () {
-    console.log(cwd);
+//    var loadpaths = bower(cwd + "/bower_components/**/*.{scss,sass}", {paths: cwd}).map(function(file) {
+//        return path.dirname(file);
+//    });
+//    console.log(cwd);
+//    console.log(loadpaths);
     gulp.watch(cwd + "/bower.json", ["bower"]);
     gulp.watch("./package.json", ["npm"]);
 //    gulp.watch(cwd + "/images/-dump/favicon.*", ["favicons"]); 
@@ -443,15 +461,14 @@ gulp.task('sprites', function () {
     
         .on("error", function () {
             gutil.log(gutil.colors.red("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-            gutil.log(gutil.colors.red("-   Make sure /images/-sprites/ exists"));
-            gutil.log(gutil.colors.red("-   Make sure there are images in this folder"));
+            gutil.log(gutil.colors.red("- Make sure /images/-sprites/ exists"));
+            gutil.log(gutil.colors.red("- Make sure there are images in this folder"));
         })
-        .pipe(gulpif('*.png', gulp.dest(cwd + '/images/-dump'), gulp.dest(cwd + '/scss/media/')))
+        .pipe(gulpif('*.{png,jpg}', gulp.dest(cwd + '/images'), gulp.dest(cwd + '/scss/media/')))
         .on("end", function () {
             gutil.log(gutil.colors.yellow("🌙 Count the unicorns jumping over the rainbows and it might just put you to sleep ⭐️"));
         });
 });
-
 
 /*! 
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡   
@@ -472,7 +489,7 @@ gulp.task('fontello', function () {
             host          : 'http://fontello.com',  // Host for response 
             font          : './',                   // Destination dir for Fonts and Glyphs 
             css           : 'css',                  // Destination dir for CSS Styles, 
-            assetsOnly    : true                    // extract from ZipFile only CSS Styles and Fonts exclude config.json,                                                  LICENSE.txt, README.txt and demo.html 
+            assetsOnly    : true                    // extract from ZipFile only CSS Styles and Fonts exclude config.json, LICENSE.txt, README.txt and demo.html 
         }))
         .pipe(gulp.dest(cwd + '/fonts/fontello/'))
         .on("end", function () {
