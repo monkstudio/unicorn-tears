@@ -25,7 +25,7 @@ eg. ``unicorn-tears --project=__PROJECTNAME__``
 ### Default watch process
 ``unicorn-tears``
 
-The default gulp process watches the project folder for sass and js changes and compiles the files to the root directory. Alongside this gulp will also watch all php and html files, and css files in the root.
+The default gulp process watches the project folder for sass and js changes and compiles the files to the root directory. Alongside this gulp will also watch all php and html files, and css and js (excluding script.js and style.css) files in the root.
 Browsersync will appear with a notice at the bottom right if connected successfully.
 If no args are passed gulp will default to watching the base install.
 

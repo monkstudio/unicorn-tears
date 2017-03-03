@@ -346,7 +346,14 @@ gulp.task("default", ["browser-sync"], function () {
     gulp.watch(cwd + "/js/**/*.js", ["scripts"]);
     gulp.watch(cwd + "/**/*.html", ["bs-reload"]);
     gulp.watch(cwd + "/**/*.php", ["bs-reload"]);
-    gulp.watch(cwd + "/**.js", ["bs-reload"]);
+    gulp.watch([
+        cwd + "/*.js",
+        "!" + cwd + "/script.js",
+        "!" + cwd + "/script.min.js"], ["bs-reload"]);
+    gulp.watch([
+        cwd + "/*.css",
+        "!" + cwd + "/style.css",
+        "!" + cwd + "/style.min.css"], ["bs-reload"]);
 });
 
 /*! 
