@@ -60,29 +60,6 @@ These tasks are meant to be run once and are not part of the default watch proce
 
 Run this task to update and install npm packages from package.json. This normally won't change but if you need to write custom gulp task for a specific project then this might help. In the event a dependency is deleted from the package.json file make sure to run  ``npm install`` in the gulpfile/package.json directory to restore working order.
 
-
-##Tasks to run at the end of the development process
-
-### Copy CSS from bower_components to /scss
-``unicorn-tears movecss``
-
-This task simply clones all the scss files from bower_components into ``scss/vendor``. Not sure if this is entirely useful yet- TBC
-
-### Optimise images
-``unicorn-tears images``
-
-Move all image assets to ``images/-dump`` in the theme folder and run the task. Gulp will optimise the files in ``images/-dump`` and output all minified images to the ``images/`` root. Feel free to delete the _dump folder after running this task.
-
-### Generate favicons
-``unicorn-tears favicons``
-
-Create a ``favicon.png`` for your project and move it to``images/-dump``. Gulp will generate a folder of favicons to the ``images/`` root. The markup for the favicons is in header.php and automatically wires the favicons in meaning you don't need to do anything else. If you need to edit the favicon html just navigate to header.php.  You can also set custom favicon output settings/sizes in the gulpfile and find html markup in the generated faviconData.json file.
-
-### Update favicons
-``unicorn-tears favicon-update``
-
-It might be a good idea to update favicon data for sizes etc. every once in a while.
-
 ### Page speed insights
 ``unicorn-tears psi``
 
@@ -99,3 +76,21 @@ The generated spritesheet will be moved to the images root while the css file wi
 
 Download your config.json from fontello and move it to ``fonts/fontello``.
 Run the task and all assets will be copied to the ``fonts`` directory. You'll have to copy the font css manually to the scss folder as you really only need the icon codes css to overwrite in ``scss/fonts/_fontello-codes.scss``.
+
+##Tasks to run at the end of the development process
+
+### Optimise images
+``unicorn-tears images``
+
+Move all image assets to ``images/-dump`` in the theme folder and run the task. Gulp will optimise the files in ``images/-dump`` and output all minified images to the ``images/`` root. Feel free to delete the _dump folder after running this task.
+
+### Update favicons
+``unicorn-tears favicon-update``
+
+It might be a good idea to update favicon data for sizes etc. every once in a while.
+
+### Generate favicons
+``unicorn-tears favicons``
+
+Create a ``favicon.png`` for your project and move it to``images/-dump``. Gulp will generate a folder of favicons to the ``images/`` root. The markup for the favicons is in header.php and automatically wires the favicons in meaning you don't need to do anything else. If you need to edit the favicon html just navigate to header.php.  You can also set custom favicon output settings/sizes in the gulpfile and find html markup in the generated faviconData.json file.
+
