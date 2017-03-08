@@ -114,96 +114,6 @@ gulp.task("bs-reload", function () {
     gutil.log(gutil.colors.white.bgBlue("⭐ Did you know unicorns love a refreshing waterfall? ⭐"));
 });
 
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Install, update, prune npm
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-If for any reason package.json needs to be 
-updated in gulp-dev, this task will run. On the
-off chance a dependency is deleted from package.json
-run npm install in the gulp-dev directory so things
-actually work again.
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-*/
-gulp.task("npm", function () {
-    return gulp.src("./package.json")
-        .pipe(shell(["npm install && npm update && npm prune"]))
-        .on("end", function () {
-            gutil.log(gutil.colors.black("🔮 All unicorns in the darklands agree - the more inception the better 💾 "));
-        });
-});
-
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Generate Favicons
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Now 10000% less annoying
-All you need to do is dump a favicon.png in the 
-images/dump folder
-Specify favicon sizes below if you must
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-*/
-gulp.task('favicons', function (done) {
-    
-    var realFavicon = require('gulp-real-favicon');
-    
-	realFavicon.generateFavicon({
-		masterPicture: cwd + "/images/-dump/favicon.png",
-		dest: cwd + "/images/favicons",
-		iconsPath: '/',
-		design: {
-			ios: {
-				pictureAspect: 'noChange',
-				assets: {
-					ios6AndPriorIcons: false,
-					ios7AndLaterIcons: false,
-					precomposedIcons: false,
-					declareOnlyDefaultIcon: true
-				}
-			},
-			desktopBrowser: {},
-			windows: {
-				pictureAspect: 'noChange',
-				backgroundColor: 'transparent',
-				onConflict: 'override',
-				assets: {
-					windows80Ie10Tile: false,
-					windows10Ie11EdgeTiles: {
-						small: false,
-						medium: true,
-						big: false,
-						rectangle: false
-					}
-				}
-			},
-			androidChrome: {
-				pictureAspect: 'noChange',
-				themeColor: 'transparent',
-				manifest: {
-					display: 'standalone',
-					orientation: 'notSet',
-					onConflict: 'override',
-					declared: true
-				},
-				assets: {
-					legacyIcon: false,
-					lowResolutionIcons: false
-				}
-			}
-		},
-		settings: {
-			scalingAlgorithm: 'Mitchell',
-			errorOnImageTooSmall: true
-		},
-		markupFile: FAVICON_DATA_FILE
-	}, function () {
-		done();
-	});
-});
 
 /*! 
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
@@ -253,13 +163,12 @@ gulp.task("styles", ["scss"], function () {
         });
 });
 
-//move scss from bower if you're feeling lazy
-gulp.task("movecss", function () {
-    return gulp.src(cwd + "/bower_components/**/*.scss")
-        .pipe(gulp.dest(cwd + "/scss/vendor"))
-        .on("end", function () {
-            gutil.log(gutil.colors.cyan("🎉 Cloning complete 🎉 "));
-        });
+//refresh page for plain css changes in the root directory
+gulp.task("plaincss", function () {
+    return gulp.src([cwd + "/*.css", "!" + cwd + "/style.css", "!" + cwd + "/style.min.css"])
+        .pipe(browserSync.reload({
+            stream: true
+        }))
 });
 
 /*! 
@@ -268,7 +177,7 @@ gulp.task("movecss", function () {
 Process scripts
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Remember to remove unnecessary scripts in 
-js/-vendor when you get a chance. This task will
+js/vendor when you get a chance. This task will
 concatenate every js in the js folder except
 files prefixed with a _
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
@@ -284,7 +193,7 @@ gulp.task("bowerinstall", function () {
 //secondly-- get the js from bower and do a 💩 in main js folder
 gulp.task("bower", ['bowerinstall'], function () {
     return gulp.src(bower({includeDev: true, filter: ["**/*.js", "!**/*.min.js", "!**/*/bootstrap.js", "!**/*/jquery.js"], paths: cwd }))
-        .pipe(gulp.dest(cwd + "/js/-vendor"))
+        .pipe(gulp.dest(cwd + "/js/vendor"))
         .on("end", function () {
             gutil.log(gutil.colors.green("🐤 Bower birds are every unicorn\'s annoying best friend 🐝 "));
         });
@@ -333,15 +242,10 @@ Basically the sparkly eye of sauron
 */
 
 gulp.task("default", ["browser-sync"], function () {
-//    var loadpaths = bower(cwd + "/bower_components/**/*.{scss,sass}", {paths: cwd}).map(function(file) {
-//        return path.dirname(file);
-//    });
-//    console.log(cwd);
-//    console.log(loadpaths);
     gulp.watch(cwd + "/bower.json", ["bower"]);
     gulp.watch("./package.json", ["npm"]);
-//    gulp.watch(cwd + "/images/-dump/favicon.*", ["favicons"]); 
-//    gulp.watch([cwd + "/images/-dump/**/*", "!" + cwd + "/images/-dump/favicon.png"], ["images"]);
+//    gulp.watch(cwd + "/images/dump/favicon.*", ["favicons"]); 
+//    gulp.watch([cwd + "/images/dump/**/*", "!" + cwd + "/images/dump/favicon.png"], ["images"]);
     gulp.watch(cwd + "/scss/**/*.scss", ["styles"]);
     gulp.watch(cwd + "/js/**/*.js", ["scripts"]);
     gulp.watch(cwd + "/**/*.html", ["bs-reload"]);
@@ -353,8 +257,19 @@ gulp.task("default", ["browser-sync"], function () {
     gulp.watch([
         cwd + "/*.css",
         "!" + cwd + "/style.css",
-        "!" + cwd + "/style.min.css"], ["bs-reload"]);
+        "!" + cwd + "/style.min.css"], ["plaincss"]);
+    
+    gutil.log(gutil.colors.bold.blue("🎨 Current working directory" + cwd));
+    gutil.log(gutil.colors.bold.red("⚡ If gulp is not working properly:"));
+    gutil.log(gutil.colors.red("⚡ Check --theme if correct ( default: unicorn-tears )"));
+    gutil.log(gutil.colors.red("⚡ Check --project is correct ( default: base )"));
+    gutil.log(gutil.colors.red("⚡ Check port number is open ( default: 3000 )"));
 });
+
+
+
+
+
 
 /*! 
 °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
@@ -376,7 +291,7 @@ into the matrix
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Optimise images
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Any image in the images/-dump folder will be 
+Any image in the images/dump folder will be 
 ground down into a fine fairy dust then sprinkled 
 liberally in the images root.
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
@@ -386,7 +301,7 @@ gulp.task("images", function () {
     
     var imagemin = require("gulp-imagemin");
     
-    return gulp.src([cwd + "/images/-dump/**/*", "!" + cwd + "/images/-dump/favicon.png"])
+    return gulp.src([cwd + "/images/dump/**/*", "!" + cwd + "/images/dump/favicon.png"])
         .pipe(imagemin({
             optimizationLevel: 5,
             progressive: true,
@@ -450,7 +365,7 @@ Generate a spritesheet
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 -   Dump sprite images in /images/-sprites/
 -   Run gulp sprites to start
--   Sprite will generate to /images/-dump - ready
+-   Sprite will generate to /images/dump - ready
     for optimising
 -   CSS file will generate to /scss/media/_sprite.scss
 -   In the event multiple sprites are needed
@@ -462,13 +377,13 @@ gulp.task('sprites', function () {
     var sprity = require('sprity');
     
     return sprity.src({
-        src: cwd + '/images/-sprites/**/*.{png,jpg}',
+        src: cwd + '/images/sprites/**/*.{png,jpg}',
         style: '_sprite.scss' //outputs plain css as a scss file
     })
     
         .on("error", function () {
             gutil.log(gutil.colors.red("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-            gutil.log(gutil.colors.red("- Make sure /images/-sprites/ exists"));
+            gutil.log(gutil.colors.red("- Make sure /images/sprites/ exists"));
             gutil.log(gutil.colors.red("- Make sure there are images in this folder"));
         })
         .pipe(gulpif('*.{png,jpg}', gulp.dest(cwd + '/images'), gulp.dest(cwd + '/scss/media/')))
@@ -502,4 +417,95 @@ gulp.task('fontello', function () {
         .on("end", function () {
             gutil.log(gutil.colors.white("🎁 In the land of bs presents are only accepted if they are wrapped with a pretty bow 🎀"));
         });
+});
+
+/*! 
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+Install, update, prune npm
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+If for any reason package.json needs to be 
+updated in gulp-dev, this task will run. On the
+off chance a dependency is deleted from package.json
+run npm install in the gulp-dev directory so things
+actually work again.
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+*/
+gulp.task("npm", function () {
+    return gulp.src("./package.json")
+        .pipe(shell(["npm install && npm update && npm prune"]))
+        .on("end", function () {
+            gutil.log(gutil.colors.black("🔮 All unicorns in the darklands agree - the more inception the better 💾 "));
+        });
+});
+
+/*! 
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+Generate Favicons
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+Now 10000% less annoying
+All you need to do is dump a favicon.png in the 
+images/dump folder
+Specify favicon sizes below if you must
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+*/
+gulp.task('favicons', function (done) {
+    
+    var realFavicon = require('gulp-real-favicon');
+    
+	realFavicon.generateFavicon({
+		masterPicture: cwd + "/images/dump/favicon.png",
+		dest: cwd + "/images/favicons",
+		iconsPath: '/',
+		design: {
+			ios: {
+				pictureAspect: 'noChange',
+				assets: {
+					ios6AndPriorIcons: false,
+					ios7AndLaterIcons: false,
+					precomposedIcons: false,
+					declareOnlyDefaultIcon: true
+				}
+			},
+			desktopBrowser: {},
+			windows: {
+				pictureAspect: 'noChange',
+				backgroundColor: 'transparent',
+				onConflict: 'override',
+				assets: {
+					windows80Ie10Tile: false,
+					windows10Ie11EdgeTiles: {
+						small: false,
+						medium: true,
+						big: false,
+						rectangle: false
+					}
+				}
+			},
+			androidChrome: {
+				pictureAspect: 'noChange',
+				themeColor: 'transparent',
+				manifest: {
+					display: 'standalone',
+					orientation: 'notSet',
+					onConflict: 'override',
+					declared: true
+				},
+				assets: {
+					legacyIcon: false,
+					lowResolutionIcons: false
+				}
+			}
+		},
+		settings: {
+			scalingAlgorithm: 'Mitchell',
+			errorOnImageTooSmall: true
+		},
+		markupFile: FAVICON_DATA_FILE
+	}, function () {
+		done();
+	});
 });
