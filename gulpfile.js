@@ -238,12 +238,12 @@ gulp.task("scripts", function () {
         }))
         .pipe(sourcemaps.init())
         .pipe(concat("script.js"))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest(cwd))
         .pipe(rename({
             suffix: ".min"
         }))
         .pipe(uglify())
-        .pipe(sourcemaps.write())
         .pipe(gulp.dest(cwd))
         .pipe(browserSync.reload({
             stream: true
@@ -262,44 +262,47 @@ Where the magic happens
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
 
-gulp.task("default", ["browser-sync"], function () {
-    
-    //show details on change
-    function change(event) {
-        gutil.log(gutil.colors.white.bold('File ' + event.path + ' was ' + event.type + ', running tasks...'));
-    }
-    
-    gulp.watch(cwd + "/bower.json", ["bower"]).on("change", change);
-    gulp.watch(assetscwd + "/scss/**/*.scss", ["styles"]).on("change", change);
-    gulp.watch(assetscwd + "/js/**/*.js", ["scripts"]).on("change", change);
-    gulp.watch(cwd + "/**/*.html", ["bs-reload"]).on("change", change);
-    gulp.watch(cwd + "/**/*.php", ["bs-reload"]).on("change", change);
-    gulp.watch([
-        cwd + "/*.js",
-        "!" + cwd + "/script.js",
-        "!" + cwd + "/script.min.js"], ["bs-reload"]).on("change", change);
-    gulp.watch([
-        cwd + "/*.css",
-        "!" + cwd + "/style.css",
-        "!" + cwd + "/style.min.css"], ["plaincss"]).on("change", change);
-    
-    
-//    optional watched files
-//    gulp.watch("./package.json", ["npm"]);
-//    gulp.watch(assetscwd + "/images/favicon.*", ["favicons"]); 
-//    gulp.watch([assetscwd + "/images/dump/**/*", "!" + assetscwd + "/images/dump/favicon.png"], ["images"]);
-    
-    
-    gutil.log(gutil.colors.bold.blue("🎨  Current working directory: \r\n           " + cwd));
-    gutil.log(gutil.colors.bold.blue("🎨  Current assets directory: \r\n           " + assetscwd));
-    gutil.log(gutil.colors.bold.red("⚡ If gulp is not working properly:"));
-    gutil.log(gutil.colors.red("⚡ Check --theme is correct ( default: unicorn-tears )"));
-    gutil.log(gutil.colors.red("⚡ Check --project is correct ( default: base )"));
-    gutil.log(gutil.colors.red("⚡ Check port number is open ( default: 3000 )"));
-    gutil.log(gutil.colors.red("⚡ Sidenote: gulp now only watches for changes within /assets for unicorn-tears and holding pages. ⚡"));
-});
+    gulp.task("default", ["browser-sync"], function () {
+        if (fs.existsSync(cwd)) {
+            //show details on change
+            function change(event) {
+                gutil.log(gutil.colors.white.bold('File ' + event.path + ' was ' + event.type + ', running tasks...'));
+            }
+
+            gulp.watch(cwd + "/bower.json", ["bower"]).on("change", change);
+            gulp.watch(assetscwd + "/scss/**/*.scss", ["styles"]).on("change", change);
+            gulp.watch(assetscwd + "/js/**/*.js", ["scripts"]).on("change", change);
+            gulp.watch(cwd + "/**/*.html", ["bs-reload"]).on("change", change);
+            gulp.watch(cwd + "/**/*.php", ["bs-reload"]).on("change", change);
+            gulp.watch([
+                cwd + "/*.js",
+                "!" + cwd + "/script.js",
+                "!" + cwd + "/script.min.js"], ["bs-reload"]).on("change", change);
+            gulp.watch([
+                cwd + "/*.css",
+                "!" + cwd + "/style.css",
+                "!" + cwd + "/style.min.css"], ["plaincss"]).on("change", change);
 
 
+        //    optional watched files
+        //    gulp.watch("./package.json", ["npm"]);
+        //    gulp.watch(assetscwd + "/images/favicon.*", ["favicons"]); 
+        //    gulp.watch([assetscwd + "/images/dump/**/*", "!" + assetscwd + "/images/dump/favicon.png"], ["images"]);
+
+
+            gutil.log(gutil.colors.bold.blue("🎨  Current working directory: \r\n           " + cwd));
+            gutil.log(gutil.colors.bold.blue("🎨  Current assets directory: \r\n           " + assetscwd));
+            gutil.log(gutil.colors.bold.red("⚡ If gulp is not working properly:"));
+            gutil.log(gutil.colors.red("⚡ Check --theme is correct ( default: unicorn-tears )"));
+            gutil.log(gutil.colors.red("⚡ Check --project is correct ( default: base )"));
+            gutil.log(gutil.colors.red("⚡ Check port number is open ( default: 3000 )"));
+            gutil.log(gutil.colors.red("⚡ Sidenote: gulp now only watches for changes within /assets for unicorn-tears and holding pages. ⚡"));
+            
+        } else {
+            gutil.log(gutil.colors.bold.blue("Path does not exist"));
+        }
+
+    });
 
 
 
