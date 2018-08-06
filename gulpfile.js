@@ -51,12 +51,14 @@ var gulp            = require("gulp"),
     gulpif          = require('gulp-if'),
     fs              = require('fs'),
     args            = require("yargs").argv,
+    babel           = require("gulp-babel"),
+    path            = require("path"),
 
     //get args
     project         = args.project || "base",
     theme           = args.theme || "unicorn-tears",
     url             = project + ".mnk.nu",
-    port                = args.port || "3000";
+    port            = args.port || "3000";
 
     //set cwd
 if (theme === "holding") {
@@ -228,7 +230,7 @@ gulp.task("scripts", function () {
         "!" + assetscwd + "/js/**/_*.js",
         assetscwd + "/js/**/!(base)*.js",
         assetscwd + "/js/base.js"
-    ])
+    ]) 
         .pipe(plumber({
             errorHandler: function (error) {
                 gutil.log(gutil.colors.red.bold("💔 Every time this appears a unicorn\"s horn falls off 💔"));
@@ -236,6 +238,7 @@ gulp.task("scripts", function () {
                 this.emit("end");
             }
         }))
+        .pipe(babel({presets: [require.resolve('babel-preset-env')]}))
         .pipe(sourcemaps.init())
         .pipe(concat("script.js"))
         .pipe(sourcemaps.write())
@@ -510,8 +513,8 @@ gulp.task('favicons', function (done) {
     var realFavicon = require('gulp-real-favicon');
     
 	realFavicon.generateFavicon({
-		masterPicture: assetscwd + "images/favicon.png",
-		dest: assetscwd + "images/favicons",
+		masterPicture: assetscwd + "/images/favicon.png",
+		dest: assetscwd + "/images/favicons",
 		iconsPath: '/',
 		design: {
 			ios: {
