@@ -61,22 +61,35 @@ var gulp            = require("gulp"),
     port            = args.port || "3000";
 
     //set cwd
-if (theme === "holding") {
-var cwd             = "../../../" + project + "/public_html";
-} else {
-var cwd             = "../../../" + project + "/public_html/wp-content/themes/" + theme;
-}
+    if (theme === "holding") {
+    var cwd             = "../../../" + project + "/public_html";
+    } else {
+    var cwd             = "../../../" + project + "/public_html/wp-content/themes/" + theme;
+    }
     //set assets directory
-if (theme === "unicorn-tears" || theme === "holding" ) {
-var assetscwd       = cwd + "/assets/";
-} else {
-var assetscwd       = cwd;
-}
+    if (theme === "unicorn-tears" || theme === "holding" ) {
+    var assetscwd       = cwd + "/assets/";
+    } else {
+    var assetscwd       = cwd;
+    }
+
+    //
+    if (theme === "unicorn-tears") {
+        var cssArgs    = [cwd + "/**/*.css", "!" + cwd + "/style.css", "!" + cwd + "/style.min.css"];
+    } else {
+        var cssArgs    = [cwd + "/**/*.css"];
+    }
+
 
 // File where the favicon markups are stored
 var FAVICON_DATA_FILE = assetscwd + '/faviconData.json';
 
-
+//Error handler
+function handleError (error) {
+    gutil.log(gutil.colors.red.bold("💔 Every time this appears a unicorn\"s horn falls off 💔"));
+    gutil.log(gutil.colors.red(error.message));
+    this.emit("end");
+}
 
 
 
@@ -151,11 +164,7 @@ css files for concatenation.
 gulp.task("scss", function () {
     return gulp.src( assetscwd + "/scss/**/*.scss")
         .pipe(plumber({
-            errorHandler: function (error) {
-                gutil.log(gutil.colors.red.bold("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-                gutil.log(gutil.colors.red(error.message));
-                this.emit("end");
-            }
+            errorHandler: handleError
         }))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'expanded'}))
@@ -185,9 +194,13 @@ gulp.task("styles", ["scss"], function () {
         })
 });
 
-//refresh page for plain css changes in the root directory
+//refresh page for plain css changes in the project folder
 gulp.task("plaincss", function () {
-    return gulp.src([cwd + "/*.css", "!" + cwd + "/style.css", "!" + cwd + "/style.min.css"])
+    return gulp.src(cssArgs)
+        .pipe(plumber({
+            errorHandler: handleError
+        }))
+        .pipe(autoprefixer())
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -203,26 +216,26 @@ Process scripts
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 This task will concatenate every js in the js 
 folder except files prefixed with a _
-Remember to remove unnecessary scripts in 
-js/vendor when you get a chance. 
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
 //firstly-- download all the bower stuff and make sure it's up to date
-gulp.task("bowerinstall", function () {
-    return gulp.src(cwd + "/bower.json")
-        .pipe(shell(["cd " + cwd + " && bower install && bower update && bower prune"]));
-});
+// gulp.task("bowerinstall", function () {
+//     return gulp.src(cwd + "/bower.json")
+//         .pipe(shell(["cd " + cwd + " && bower install && bower update && bower prune"]));
+// });
 
-//secondly-- get the js from bower and do a 💩 in main js folder
-gulp.task("bower", ['bowerinstall'], function () {
-    return gulp.src(bower({includeDev: true, filter: ["**/*.js", "!**/*.min.js", "!**/*/bootstrap.js", "!**/*/jquery.js"], paths: cwd }))
-        .pipe(gulp.dest( assetscwd + "/js/vendor"))
-        .on("end", function () {
-            gutil.log(gutil.colors.green("🐤 Bower birds are every unicorn\'s annoying best friend 🐝 "));
-        });
-});
-//thirdly-- process js folder and output script.js and script.min.js in project root
+// //secondly-- get the js from bower and do a 💩 in main js folder
+// gulp.task("bower", ['bowerinstall'], function () {
+//     return gulp.src(bower({includeDev: true, filter: ["**/*.js", "!**/*.min.js", "!**/*/bootstrap.js", "!**/*/jquery.js"], paths: cwd }))
+//         .pipe(gulp.dest( assetscwd + "/js/vendor"))
+//         .on("end", function () {
+//             gutil.log(gutil.colors.green("🐤 Bower birds are every unicorn\'s annoying best friend 🐝 "));
+//         });
+// });
+
+
+//Process js folder and output script.js and script.min.js in project root
 gulp.task("scripts", function () {
     return gulp.src([
         //process base.js last, ignore files prefixed with a _
@@ -232,11 +245,7 @@ gulp.task("scripts", function () {
         assetscwd + "/js/base.js"
     ]) 
         .pipe(plumber({
-            errorHandler: function (error) {
-                gutil.log(gutil.colors.red.bold("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-                gutil.log(gutil.colors.red(error));
-                this.emit("end");
-            }
+            errorHandler: handleError
         }))
         .pipe(babel({presets: [require.resolve('babel-preset-env')]}))
         .pipe(sourcemaps.init())
@@ -281,10 +290,7 @@ Where the magic happens
                 cwd + "/*.js",
                 "!" + cwd + "/script.js",
                 "!" + cwd + "/script.min.js"], ["bs-reload"]).on("change", change);
-            gulp.watch([
-                cwd + "/*.css",
-                "!" + cwd + "/style.css",
-                "!" + cwd + "/style.min.css"], ["plaincss"]).on("change", change);
+            gulp.watch(cssArgs, ["plaincss"]).on("change", change);
 
 
         //    optional watched files
@@ -340,7 +346,7 @@ gulp.task("images", function () {
     
     var imagemin = require("gulp-imagemin");
     
-    return gulp.src([assetscwd + "/images/dump/**/*", "!" + cwd + "/images/dump/favicon.png"])
+    return gulp.src([assetscwd + "/images/**/*", "!" + cwd + "/images/favicon.png"])
         .pipe(imagemin({
             optimizationLevel: 5,
             progressive: true,
@@ -348,9 +354,9 @@ gulp.task("images", function () {
             svgoPlugins: [ {removeViewBox: false}, {removeUselessStrokeAndFill: false}],
             verbose: true
         }))
-        .pipe(gulp.dest(assetscwd + "/images/"))
+        .pipe(gulp.dest(assetscwd + "/images/min"))
         .on("end", function () {
-            gutil.log(gutil.colors.white("🎨 Images minified to " + assetscwd + "/images/" ));
+            gutil.log(gutil.colors.white("🎨 Images minified to " + assetscwd + "/images/min" ));
         });
     
 });
