@@ -1,40 +1,47 @@
 {
   "name": "unicorn-tears",
   "version": "1.0.0",
-  "author": "Jaclyn Tan <jaclyn@monk.com.au>",
-  "description": "It's magic",
+  "description": "task runner for unicorn-tears-theme",
+  "main": "gulpfile.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
-    "url": "git@github.com:monkstudio/_unicorn-tears.git"
+    "url": "git+https://github.com/monkstudio/unicorn-tears.git"
   },
-  "main": "gulpfile.js",
+  "keywords": [
+    "gulp",
+    "wordpress"
+  ],
+  "author": "Jaclyn Tan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/monkstudio/unicorn-tears/issues"
+  },
+  "homepage": "https://github.com/monkstudio/unicorn-tears#readme",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "browser-sync": "*",
-    "gulp": "*",
-    "gulp-autoprefixer": "*",
-    "gulp-babel": "^7.0.1",
-    "gulp-bower-files": "*",
-    "gulp-clean-css": "*",
-    "gulp-concat": "*",
-    "gulp-fontello": "*",
-    "gulp-if": "*",
-    "gulp-imagemin": "*",
-    "gulp-install": "*",
-    "gulp-main-bower-files": "*",
-    "gulp-plumber": "*",
-    "gulp-real-favicon": "*",
-    "gulp-rename": "*",
-    "gulp-sass": "*",
-    "gulp-shell": "*",
-    "gulp-uglify": "*",
-    "psi": "*",
-    "sprity": "*",
-    "sprity-sass": "*",
-    "yargs": "*"
-  },
-  "license": "ISC"
+    "browser-sync": "^2.26.3",
+    "browserify": "^16.2.3",
+    "fs": "0.0.1-security",
+    "gradient-string": "^1.2.0",
+    "gulp": "^4.0.0",
+    "gulp-asset-manifest": "0.0.6",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^5.0.3",
+    "gulp-plumber": "^1.2.1",
+    "gulp-real-favicon": "^0.3.2",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-shell": "^0.6.5",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.1",
+    "gulp-util": "^3.0.8",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0",
+    "yargs": "^13.2.1"
+  }
 }

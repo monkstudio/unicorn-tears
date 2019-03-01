@@ -1,10 +1,9 @@
  /*jslint node:true */
 
-"use strict";
+'use strict';
 /*
-        
                     . . . .
-                      ,`,`,`,`,
+                    ,`,`,`,`,
 . . . .               `\`\`\`\;
 `\`\`\`\`,            ~|;!;!;\!
  ~\;\;\;\|\          (--,!!!~`!       .
@@ -12,7 +11,7 @@
  (--,\\\===~\         `,-,~,=,:. _,//
   (--,\\\==~`\        ~-=~-.---|\;/J,
    (--,\\\((```==.    ~'`~/       a |
-     (-,.\\('('(`\\.  ~'=~|     \_.  \        ⋆ ✢ ✣ ✤ ✥ ✦ ✧ ✩ ✪ ✫ ✬ ✭ 
+     (-,.\\('('(`\\.  ~'=~|     \_.  \        ⋆ ✢ ✣ ✤ ✥ ✦ ✧ ✩ ✪ ✫ ✬ ✭
         (,--(,(,(,'\\. ~'=|       \\_;>  --   Magic really does exist!
           (,-( ,(,(,;\\ ~=/        \          ✧ ✩ ✪ ✫ ✬ ✭ ✮ ✯ ✰ ★ ✬ ✭
           (,-/ (.(.(,;\\,/          )
@@ -27,70 +26,79 @@
   '===~'   |  |    (, <.
            / /       \. \
          _/ /          \_\
-        /_!/            >_\
-        
-           o                    _/_               
- , , _ _  ,  _, __ _   _ _      /  _  __,  _   (  
+         / /            \ \
+        /_!/             >_\
+
+           o                    _/_
+ , , _ _  ,  _, __ _   _ _      /  _  __,  _   (
 (_/_/ / /_(_(__(_)/ (_/ / /_---(__(/_(_/(_/ (_/_)_
+
+_,     _   ,_   ,    .  _,_ ,__,    // 2 . 0 . 0
+ (_/__(/__/ (__/_)__/__(_/_/ / (_
+
 
 */
 
-var gulp            = require("gulp"),
-    browserSync     = require("browser-sync").create(),
-    plumber         = require("gulp-plumber"),
-    gutil           = require("gulp-util"),
-    rename          = require("gulp-rename"),
-    sass            = require("gulp-sass"),
-    cleanCSS        = require("gulp-clean-css"),
-    autoprefixer    = require("gulp-autoprefixer"),
-    sourcemaps      = require("gulp-sourcemaps"),
-    concat          = require("gulp-concat"),
-    uglify          = require("gulp-uglify"),
-    bower           = require("main-bower-files"),
-    shell           = require("gulp-shell"),
-    gulpif          = require('gulp-if'),
-    fs              = require('fs'),
-    args            = require("yargs").argv,
-    babel           = require("gulp-babel"),
-    path            = require("path"),
 
-    //get args
-    project         = args.project || "base",
-    theme           = args.theme || "unicorn-tears",
-    url             = project + ".mnk.nu",
-    port            = args.port || "3000";
+const   gulp            = require('gulp'),
+        browsersync     = require('browser-sync').create(),
+        plumber         = require('gulp-plumber'),
+        gutil           = require('gulp-util'),
+        rename          = require('gulp-rename'),
+        sass            = require('gulp-sass'),
+        cleanCSS        = require('gulp-clean-css'),
+        autoprefixer    = require('gulp-autoprefixer'),
+        sourcemaps      = require('gulp-sourcemaps'),
+        concat          = require('gulp-concat'),
+        uglify          = require('gulp-uglify'),
+        fs              = require('fs'),
+        args            = require('yargs').argv,
+        imagemin        = require('gulp-imagemin'),
+        realFavicon     = require('gulp-real-favicon'),
+        browserify      = require('browserify'),
+        source          = require('vinyl-source-stream'),
+        buffer          = require('vinyl-buffer'),
+        gradient        = require('gradient-string'),
+        assetManifest   = require('gulp-asset-manifest'),
 
-    //set cwd
-    if (theme === "holding") {
-    var cwd             = "../../../" + project + "/public_html";
-    } else {
-    var cwd             = "../../../" + project + "/public_html/wp-content/themes/" + theme;
-    }
-    //set assets directory
-    if (theme === "unicorn-tears" || theme === "holding" ) {
-    var assetscwd       = cwd + "/assets/";
-    } else {
-    var assetscwd       = cwd;
-    }
+        //get args
+        project         = args.project || 'base',
+        cms             = args.cms || 'wp',
+        theme           = args.theme || 'unicorn-tears',
+        url             = project + '.mnk.nu',
+        port            = args.port || '3000',
+        cwd             = '/devserver/' + project + '/public_html';
 
-    //
-    if (theme === "unicorn-tears") {
-        var cssArgs    = [cwd + "/**/*.css", "!" + cwd + "/style.css", "!" + cwd + "/style.min.css"];
-    } else {
-        var cssArgs    = [cwd + "/**/*.css"];
-    }
+        //get the project directory
+        if ( cms === 'wp') {
+var     projectcwd = cwd + '/wp-content/themes/' + theme;
+        } else {
+var     projectcwd      = cwd;
+        }
 
+        //now that we finally have the project director, let's get the config files
+const   config          = require(projectcwd + '/gulpfile.config.js'),
+        faviconDataFile = projectcwd + config.faviconFile;
 
-// File where the favicon markups are stored
-var FAVICON_DATA_FILE = assetscwd + '/faviconData.json';
 
 //Error handler
 function handleError (error) {
-    gutil.log(gutil.colors.red.bold("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-    gutil.log(gutil.colors.red(error.message));
-    this.emit("end");
+    gutil.log(
+        gradient.passion("\n          ,  , \n"),
+        gradient.passion("          \\ \\ \n"),
+        gradient.passion("          ) \\ \\    _p_ \n"),
+        gradient.passion("         )^\))\))  /  *\\ \n"),
+        gradient.passion("          \_|| || / /^`-'  💔  Every time this appears a unicorn\'s horn falls off  💔 \n"),
+        gradient.passion("  __       -\ \\--/ / \n"),
+        gradient.passion("<'  \\___/   ___. )' \n"),
+        gradient.passion("     `====\ )___/\\\\ \n"),
+        gradient.passion("        //     `' \n"),
+        gradient.passion("        \\     /  \\ \n"),
+        gradient.passion("         `' \n")
+    );
+    gutil.log(gutil.colors.red(error));
+    this.emit('end');
 }
-
 
 
 /*!
@@ -100,9 +108,9 @@ Set up Browsersync
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-gulp.task("browser-sync", function () {
-    browserSync.init({
-        proxy: url, 
+function browserSync(done) {
+    browsersync.init({
+        proxy: url,
         notify: {
             styles: {
                 top: 'auto',
@@ -122,16 +130,24 @@ gulp.task("browser-sync", function () {
         port: port,
         open: false
     });
-    gutil.log(gutil.colors.green.bold("Welcome to the wonderful world of"), gutil.colors.yellow.bold("~ unicorns ~ "));
-    gutil.log(gutil.colors.magenta("🌈  unicorn-tears double rainbow edition 🌈 "), gutil.colors.blue("version 1.5 ( ˘ ³˘) 💝"));
-});
+
+    //hello, let's introduce ourselves
+    gutil.log(gradient.atlas.multiline('                    . . . .\n                    ,`,`,`,`,\n. . . .               `\\`\\`\\`\\;\n`\\`\\`\\`\\`,            ~|;!;!;\\!\n ~\\;\\;\\;\\|\\          (--,!!!~`!       .\n(--,\\\\\\===~\\         (--,|||~`!     ./\n (--,\\\\\\===~\\         `,-,~,=,:. _,//\n  (--,\\\\\\==~`\\        ~-=~-.---|\\;/J,\n   (--,\\\\\\((```==.    ~\'`~/       a |\n     (-,.\\\\(\'(\'(`\\\\.  ~\'=~|     \\_.  \\        ⋆ ✢ ✣ ✤ ✥ ✦ ✧ ✩ ✪ ✫ ✬ ✭\n        (,--(,(,(,\'\\\\. ~\'=|       \\\\_;>  --   Magic really does exist!\n          (,-( ,(,(,;\\\\ ~=/        \\          ✧ ✩ ✪ ✫ ✬ ✭ ✮ ✯ ✰ ★ ✬ ✭\n          (,-/ (.(.(,;\\\\,/          )\n           (,--/,;,;,;,\\\\         ./------.\n             (==,-;-\'`;\'         /_,----`. \\\n     ,.--_,__.-\'                    `--.  ` \\\n    (=\'~-_,--/        ,       ,!,___--. \\  \\_)\n   (-/~(     |         \\   ,_-         | ) /_|\n   (~/((\\    )\\._,      |-\'         _,/ /\n    \\\\))))  /   ./~.    |           \\_\\;\n ,__/////  /   /    )  /\n  \'===~\'   |  |    (, <.\n           / /       \\. \\\n         _/ /          \\_\\\n         / /            \\ \\\n        /_!/             >_\\\n\n           o                    _/_\n , , _ _  ,  _, __ _   _ _      /  _  __,  _   (\n(_/_/ / /_(_(__(_)/ (_/ / /_---(__(/_(_/(_/ (_/_)_\n\n_,     _   ,_   ,    .  _,_ ,__,    // 2 . 0 . 0\n (_/__(/__/ (__/_)__/__(_/_/ / (_\n\n'));
+    gutil.log(gutil.colors.yellow.bold('Welcome to the wonderful world of'),gradient.pastel( '~ unicorns ~'));
+    gutil.log(gradient.pastel('☀️ unicorn-tears 🌟 sparkly 🌟 rainbow 🌟 edition 🌈 version 2.0.0 🌙'));
+
+    //project details
+    gutil.log(gradient.teen.multiline('\n     .^====^.     \n    =( - o- )=  ~ Current working directory:\n     /      \\\\\n   +( |    | )//\n'),gutil.colors.green.bold('📂  ' + projectcwd));
+    gutil.log(gradient.instagram.multiline('\n     .^====^.\n    =( o__o )=  ~ If gulp is not working properly:\n     /      \\\\\n   +( |    | )//')
+    ,gutil.colors.green.bold('\n ✅  Check --theme is correct ( default: unicorn-tears )')
+    ,gutil.colors.green.bold('\n ✅  Check --project is correct ( default: base )')
+    ,gutil.colors.green.bold('\n ✅  Check you have a gulpfile.config.js in the root of your project folder, and all paths are correct')
+    ,gutil.colors.green.bold('\n ✅  For more info please read the README.md')
+    );
+}
 
 
-
-
-
-
-/*! 
+/*!
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Auto Refresh
@@ -140,213 +156,172 @@ Reloads the page on watched changes
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-gulp.task("bs-reload", function () {
-    browserSync.reload();
-    gutil.log(gutil.colors.white("⭐  R E F R E S H I N G  ⭐"));
-});
+
+function browserSyncReload(done) {
+    browsersync.reload();
+    gutil.log(gutil.colors.white('⭐  R E F R E S H I N G  ⭐'));
+    done();
+}
 
 
-
-
-
-
-/*! 
+/*!
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Process scss
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Future note: add dump folder for straight up 
-css files for concatenation.
+Compiles sass and reloads for plain css files
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
 //firstly-- compile style.css and source map
-gulp.task("scss", function () {
-    return gulp.src( assetscwd + "/scss/**/*.scss")
+function scss() {
+    return gulp.src([projectcwd + config.styleSRC])
         .pipe(plumber({
             errorHandler: handleError
         }))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'expanded'}))
-        .pipe(autoprefixer())
+        .pipe(autoprefixer(config.BROWSER_SUPPORT))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest(cwd))
-        .pipe(browserSync.reload({
-            stream: true
-        }))
-});
+        .pipe(gulp.dest(projectcwd + config.styleDST))
+        .pipe(browsersync.stream())
+}
 
 //secondly-- compile minified style.min.css to project root
-gulp.task("styles", ["scss"], function () {
-    
-    return gulp.src(cwd + "/style.css")
-        .pipe(rename({ suffix: ".min" }))
+function styles() {
+    return gulp.src(projectcwd + config.styleCompiled, {
+        allowEmpty: true
+	})
+        .pipe(rename({ suffix: '.min' }))
         .pipe(cleanCSS({ debug: true }, function (details) {
-            gutil.log(gutil.colors.red(details.name + "(original file size): " + details.stats.originalSize));
-            gutil.log(gutil.colors.green(details.name + "(minified file size): " + details.stats.minifiedSize));
+            gutil.log(gutil.colors.red(details.name + '(original file size): ' + details.stats.originalSize));
+            gutil.log(gutil.colors.green(details.name + '(minified file size): ' + details.stats.minifiedSize));
         }))
-        .pipe(gulp.dest(cwd))
-        .pipe(browserSync.reload({
-            stream: true
+        .pipe(assetManifest({
+            manifestFile: projectcwd + config.manifestPath,
+            bundleName: 'styles',
+            includeRelativePath: true
         }))
-        .on("end", function () {
-            gutil.log(gutil.colors.white.bold("style.css & style.min.css minified to " + cwd));
-        })
-});
+        .pipe(gulp.dest(projectcwd + config.styleDST))
+        .pipe(browsersync.stream())
+        .on('end', function () {
+            gutil.log(
+                gradient.instagram("\n                ✿ \n"),
+                gradient.instagram("              •̀ ༽☆ \n"),
+                gradient.instagram("          ,.~ ` ~., \n"),
+                gradient.instagram("      ___/         \\ \n"),
+                gradient.instagram("     (   *   ◡      !     ♥  CSS minifed to " + projectcwd + config.styleDST + "\n"),
+                gradient.instagram("     `———,          /~,\n"),
+                gradient.instagram("    ,-~,(,,/      (,,/\\ \n"),
+                gradient.instagram("   ◜   |              |   \n"),
+                gradient.instagram("  |    \(``,      (`` / \n"),
+                gradient.instagram("   \     \.,__    __,/ \n"),
+            )
+        });
+}
 
 //refresh page for plain css changes in the project folder
-gulp.task("plaincss", function () {
-    return gulp.src(cssArgs)
+function plainCSS() {
+    return gulp.src(projectcwd + config.plainstyleSRC)
         .pipe(plumber({
             errorHandler: handleError
         }))
         .pipe(autoprefixer())
-        .pipe(browserSync.reload({
-            stream: true
+        .pipe(assetManifest({
+            manifestFile: projectcwd + config.manifestPath,
+            bundleName: 'styles',
+            includeRelativePath: true
         }))
-        .on("end", function () {
-            gutil.log(gutil.colors.white("👑 Double rainbow all the way"));
+        .pipe(browsersync.stream())
+        .on('end', function () {
+            gutil.log(gutil.colors.white('👑 Double rainbow all the way'));
         });
-});
+}
 
-/*! 
+/*!
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Process scripts
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-This task will concatenate every js in the js 
-folder except files prefixed with a _
+Bundles es6 modules as imports.js
+Concatenates regular js as script.js
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-//firstly-- download all the bower stuff and make sure it's up to date
-// gulp.task("bowerinstall", function () {
-//     return gulp.src(cwd + "/bower.json")
-//         .pipe(shell(["cd " + cwd + " && bower install && bower update && bower prune"]));
-// });
+//bundle es6 scripts
+function bundle()  {
+    return browserify({
+        entries: projectcwd + config.jsImports, debug: true
+    })
+        .transform('babelify', { presets: ['@babel/preset-env'] })
+        .bundle()
+        .pipe(source('imports.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init())
+        .pipe(uglify())
+        .pipe(sourcemaps.write('imports.map'))
+        .pipe(assetManifest({
+            manifestFile: projectcwd + config.manifestPath,
+            bundleName: 'imports',
+            includeRelativePath: true
+        }))
+        .pipe(gulp.dest(projectcwd+config.jsDST))
+        .pipe(browsersync.stream())
+}
 
-// //secondly-- get the js from bower and do a 💩 in main js folder
-// gulp.task("bower", ['bowerinstall'], function () {
-//     return gulp.src(bower({includeDev: true, filter: ["**/*.js", "!**/*.min.js", "!**/*/bootstrap.js", "!**/*/jquery.js"], paths: cwd }))
-//         .pipe(gulp.dest( assetscwd + "/js/vendor"))
-//         .on("end", function () {
-//             gutil.log(gutil.colors.green("🐤 Bower birds are every unicorn\'s annoying best friend 🐝 "));
-//         });
-// });
-
-
-//Process js folder and output script.js and script.min.js in project root
-gulp.task("scripts", function () {
+//Process normal js
+function scripts() {
     return gulp.src([
         //process base.js last, ignore files prefixed with a _
-        "!" + assetscwd + "/js/**/_*/**",
-        "!" + assetscwd + "/js/**/_*.js",
-        assetscwd + "/js/**/!(base)*.js",
-        assetscwd + "/js/base.js"
-    ]) 
+        projectcwd + config.jsSRC + '/**/!(base)*.js',
+        projectcwd + config.jsSRC + '/base.js',
+
+        '!' +  projectcwd + config.jsSRC + '/**/_*/**',
+        '!' +  projectcwd + config.jsSRC + '/**/_*',
+        '!' +  projectcwd + config.jsSRC + '/**/imports/**'
+    ], { allowEmpty: true })
         .pipe(plumber({
             errorHandler: handleError
         }))
-        .pipe(babel({presets: [require.resolve('babel-preset-env')]}))
-        .pipe(sourcemaps.init())
-        .pipe(concat("script.js"))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest(cwd))
+        .pipe(concat('script.js'))
+        .pipe(gulp.dest(projectcwd+config.jsDST))
         .pipe(rename({
-            suffix: ".min"
+            suffix: '.min'
         }))
         .pipe(uglify())
-        .pipe(gulp.dest(cwd))
-        .pipe(browserSync.reload({
-            stream: true
+        .pipe(assetManifest({
+            manifestFile: projectcwd + config.manifestPath,
+            bundleName: 'js',
+            includeRelativePath: true
         }))
-        .on("end", function () {
-            gutil.log(gutil.colors.white.bold("script.js & script.min.js minified to " + cwd));
+        .pipe(gulp.dest(projectcwd+config.jsDST))
+        .pipe(browsersync.stream())
+        .on('end', function () {
+            gutil.log(
+                gradient.fruit("\n"),
+                gradient.fruit("    .^====^.   \n"),
+                gradient.fruit("   =( ^--^ )=  ♥ script.js & script.min.js minified to " + projectcwd + config.jsDST + "\n"),
+                gradient.fruit("    /      \\   /~\n"),
+                gradient.fruit("  +( |    | )//\n" )
+            );
         });
-});
+}
 
-
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Where the magic happens
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-*/
-
-    gulp.task("default", ["browser-sync"], function () {
-        if (fs.existsSync(cwd)) {
-            //show details on change
-            function change(event) {
-                gutil.log(gutil.colors.white.bold('File ' + event.path + ' was ' + event.type + ', running tasks...'));
-            }
-
-            gulp.watch(cwd + "/bower.json", ["bower"]).on("change", change);
-            gulp.watch(assetscwd + "/scss/**/*.scss", ["styles"]).on("change", change);
-            gulp.watch(assetscwd + "/js/**/*.js", ["scripts"]).on("change", change);
-            gulp.watch(cwd + "/**/*.html", ["bs-reload"]).on("change", change);
-            gulp.watch(cwd + "/**/*.php", ["bs-reload"]).on("change", change);
-            gulp.watch([
-                cwd + "/*.js",
-                "!" + cwd + "/script.js",
-                "!" + cwd + "/script.min.js"], ["bs-reload"]).on("change", change);
-            gulp.watch(cssArgs, ["plaincss"]).on("change", change);
-
-
-        //    optional watched files
-        //    gulp.watch("./package.json", ["npm"]);
-        //    gulp.watch(assetscwd + "/images/favicon.*", ["favicons"]); 
-        //    gulp.watch([assetscwd + "/images/dump/**/*", "!" + assetscwd + "/images/dump/favicon.png"], ["images"]);
-
-
-            gutil.log(gutil.colors.bold.blue("🎨  Current working directory: \r\n           " + cwd));
-            gutil.log(gutil.colors.bold.blue("🎨  Current assets directory: \r\n           " + assetscwd));
-            gutil.log(gutil.colors.bold.red("⚡ If gulp is not working properly:"));
-            gutil.log(gutil.colors.red("⚡ Check --theme is correct ( default: unicorn-tears )"));
-            gutil.log(gutil.colors.red("⚡ Check --project is correct ( default: base )"));
-            gutil.log(gutil.colors.red("⚡ Check port number is open ( default: 3000 )"));
-            gutil.log(gutil.colors.red("⚡ Sidenote: gulp now only watches for changes within /assets for unicorn-tears and holding pages. ⚡"));
-            
-        } else {
-            gutil.log(gutil.colors.bold.blue("Path does not exist"));
-        }
-
-    });
-
-
-
-
-/*! 
-°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Tasks on the fly
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-♡ run a single task from below or above by typing:
-
-gulp __TASKNAME__ --project=__PROJECT__ --theme=__THEME__ 
-
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-
-
-*! 
+/*!
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Optimise images
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Any image in the images/dump folder will be 
-ground down into a fine fairy dust then sprinkled 
-liberally in the images root.
+Images are minified to the dist folder
+Favicons are generated into the dist folder
+
+Note: because there is sometimes a delay in images copying over, this task may be triggered multiple times.
+If this happens feel free to ignore the terminal until it completes minifying all the files
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-gulp.task("images", function () {
-    
-    var imagemin = require("gulp-imagemin");
-    
-    return gulp.src([assetscwd + "/images/**/*", "!" + cwd + "/images/favicon.png"])
+function images() {
+    return gulp.src(projectcwd+config.imgSRC+'/*.+(png|jpg|jpeg|gif|svg)')
         .pipe(imagemin({
             optimizationLevel: 5,
             progressive: true,
@@ -354,156 +329,46 @@ gulp.task("images", function () {
             svgoPlugins: [ {removeViewBox: false}, {removeUselessStrokeAndFill: false}],
             verbose: true
         }))
-        .pipe(gulp.dest(assetscwd + "/images/min"))
-        .on("end", function () {
-            gutil.log(gutil.colors.white("🎨 Images minified to " + assetscwd + "/images/min" ));
-        });
-    
-});
-
-
-
-
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-Check Page Speed Insights
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Run gulp psi to start
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡ 
-*/
-gulp.task('psi-mobile', function () {
-    
-    var psi = require('psi');
-    
-    return psi.output(url, {nokey: 'true', strategy: 'mobile'});
-    //note: register for a google developers key 
-});
-gulp.task('psi-desktop', function () {
-    
-    var psi = require('psi');
-    
-    return psi.output(url, {nokey: 'true', strategy: 'desktop'});
-});
-gulp.task('psi', ['psi-mobile', 'psi-desktop']);
-
-
-
-
-
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡   
-Generate a spritesheet
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
--   Dump sprite images in /images/sprites/
--   Run gulp sprites to start
--   Sprite will generate to /images/dump for optimisation
--   CSS file will generate to /scss/media/_sprite.scss
--   In the event multiple sprites are needed
-    consolidate the css in _sprites.scss 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-*/
-gulp.task('sprites', function () {
-    
-    var sprity = require('sprity');
-    
-    return sprity.src({
-        src: assetscwd + '/images/sprites/**/*.{png,jpg}',
-        style: '_sprite.scss' //outputs plain css as a scss file
-    })
-    
-        .on("error", function () {
-            gutil.log(gutil.colors.red("💔 Every time this appears a unicorn\"s horn falls off 💔"));
-            gutil.log(gutil.colors.red("- Make sure /images/sprites/ exists"));
-            gutil.log(gutil.colors.red("- Make sure there are images in this folder"));
-        })
-        .pipe(gulpif('*.{png,jpg}', gulp.dest(cwd + "/images"), gulp.dest(cwd + "/scss/media/")))
-        .on("end", function () {
-            gutil.log(gutil.colors.white("🌙 Spritesheet saved to " + cwd + "/images"));
-            gutil.log(gutil.colors.white("🎀 CSS saved to " + cwd + "/scss/media/"));
-        });
-});
-
-
-
-
-
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡  
-Generate fontello fonts
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
--   Download config.json from fontello
--   Put config.json in /fonts/fontello/
--   Run gulp fontello to start
--   Copy fontello codes to scss folder
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡ 
-*/
-gulp.task('fontello', function () {
-    
-    var fontello = require('gulp-fontello');
-    
-    return gulp.src(assetscwd + '/fonts/fontello/config.json')
-        .pipe(fontello({
-            host          : 'http://fontello.com',  // Host for response 
-            font          : './',                   // Destination dir for Fonts and Glyphs 
-            css           : 'css',                  // Destination dir for CSS Styles, 
-            assetsOnly    : true                    // extract from ZipFile only CSS Styles and Fonts exclude config.json, LICENSE.txt, README.txt and demo.html 
+        .pipe(assetManifest({
+            manifestFile: projectcwd + config.manifestPath,
+            bundleName: 'images',
+            includeRelativePath: true
         }))
-        .pipe(gulp.dest(assetscwd + "/fonts/fontello/"))
-        .on("end", function () {
-            gutil.log(gutil.colors.white("🎁 Fontello assets saved to " + assetscwd + 'fonts/fontello/'));
+        .pipe(gulp.dest(projectcwd + config.imgDST))
+        .on('end', function () {
+            gutil.log(
+                gradient.vice("\n     ┌╌┐\n"),
+                gradient.vice("   .╌╌╌.\n"),
+                gradient.vice("   (  ◓ ▻     ♥ Images minified to " + projectcwd + config.imgDST + "\n"),
+                gradient.vice("  /   ◜ \\\n"),
+                gradient.vice(" /   {   }\n"),
+                gradient.vice(" \\    ◟ /◞\n"),
+                gradient.vice(" \\︿︿︿︿==\n"),
+            );
         });
-});
 
-
-
-
-
-
-/*! 
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-Install, update, prune npm
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-If for any reason package.json needs to be 
-updated in gulp-dev, this task will run. On the
-off chance a dependency is deleted from package.json
-run npm install in the gulp-dev directory so things
-actually work again.
-♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
-*/
-gulp.task("npm", function () {
-    return gulp.src("./package.json")
-        .pipe(shell(["npm install && npm update && npm prune"]))
-        .on("end", function () {
-            gutil.log(gutil.colors.black("🔮 node_modules updated"));
-        });
-});
-
-
-
+}
 
 
 /*
-♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡  
-Check for updates on RealFaviconGenerator 
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+Check for updates on RealFaviconGenerator
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Run gulp favicon-update to start
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-gulp.task('favicon-update', function (done) {
-    
-    var realFavicon = require('gulp-real-favicon'),
-	    currentVersion = JSON.parse(fs.readFileSync(FAVICON_DATA_FILE)).version;
-        
+function faviconUpdate(done) {
+    // File where the favicon markups are stored
+    const currentVersion = JSON.parse(fs.readFileSync(faviconDataFile)).version;
 	realFavicon.checkForUpdates(currentVersion, function (err) {
 		if (err) {
 			throw err;
 		}
-	});
-});
+    });
+    done();
+}
 
-/*! 
+/*!
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 Generate Favicons
@@ -514,13 +379,10 @@ Run task and make sure markup is in header.php
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-gulp.task('favicons', function (done) {
-    
-    var realFavicon = require('gulp-real-favicon');
-    
+function favicons(done) {
 	realFavicon.generateFavicon({
-		masterPicture: assetscwd + "/images/favicon.png",
-		dest: assetscwd + "/images/favicons",
+		masterPicture: projectcwd + config.watchFAVICON,
+		dest: projectcwd + config.imgDST + '/favicons',
 		iconsPath: '/',
 		design: {
 			ios: {
@@ -535,7 +397,7 @@ gulp.task('favicons', function (done) {
 			desktopBrowser: {},
 			windows: {
 				pictureAspect: 'noChange',
-				backgroundColor: 'transparent',
+				backgroundColor: '#da532c',
 				onConflict: 'override',
 				assets: {
 					windows80Ie10Tile: false,
@@ -549,7 +411,7 @@ gulp.task('favicons', function (done) {
 			},
 			androidChrome: {
 				pictureAspect: 'noChange',
-				themeColor: 'transparent',
+				themeColor: '#ffffff',
 				manifest: {
 					display: 'standalone',
 					orientation: 'notSet',
@@ -564,11 +426,92 @@ gulp.task('favicons', function (done) {
 		},
 		settings: {
 			scalingAlgorithm: 'Mitchell',
-			errorOnImageTooSmall: true
+			errorOnImageTooSmall: false,
+			readmeFile: false,
+			htmlCodeFile: true,
+			usePathAsIs: false
 		},
-		markupFile: FAVICON_DATA_FILE
-	}, function () {
-		done();
-        gutil.log(gutil.colors.white("🎁 Favicons saved to " + assetscwd + "images/favicons"));
-	});
-});
+		markupFile: faviconDataFile
+    }, function () {
+        done();
+        gutil.log(gutil.colors.white('🎁  Favicons saved to ' + projectcwd + config.imgDST + '/favicons'));
+        gutil.log(gradient.summer('♥ Copy the code below to your header and update the paths accordingly ♥'));
+        gutil.log(gradient.atlas.multiline('\n\n' + JSON.parse(fs.readFileSync(faviconDataFile)).favicon.html_code + "\n\n"));
+    });
+}
+
+/*!
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+Copy font files
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+*/
+function fonts() {
+	return gulp.src(projectcwd + config.woffSRC)
+        .pipe(rename({dirname: ''}))
+        .pipe(assetManifest({
+            manifestFile: projectcwd + config.manifestPath,
+            bundleName: 'fonts',
+            includeRelativePath: true
+        }))
+        .pipe(gulp.dest(projectcwd + config.woffDST))
+        .pipe(browsersync.stream())
+        .on('end', function () {
+            gutil.log(
+                gradient.retro("\n       `) \n"),
+                gradient.retro(" >____/v=>   ♥  Fonts copied to " + projectcwd + config.woffDST + "\n"),
+                gradient.retro("  >     \\\n"),
+                gradient.retro("   \\____/\n"),
+                gradient.retro("     LL\n\n")
+            )
+        });
+}
+
+
+/*!
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+Watch the folder
+♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
+♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
+*/
+
+function watchFiles() {
+    if (fs.existsSync(cwd)) {
+
+        //show details on change
+        function change(event) {
+            gutil.log(gradient.cristal('✍️ File ' + event + ' was changed, running tasks...'));
+        }
+
+        // JS
+        gulp.watch(projectcwd+config.watchJSIMPORTS, gulp.series(bundle)).on('change', change);
+        gulp.watch(projectcwd+config.watchJS, gulp.series(scripts)).on('change', change);
+
+        // CSS
+        gulp.watch(projectcwd+config.watchSCSS, gulp.series(scss,styles)).on('change', change);
+        gulp.watch(projectcwd+config.watchCSS, gulp.series(plainCSS,browserSyncReload)).on('change', change);
+
+        // Images
+        gulp.watch(projectcwd+config.watchFAVICON, gulp.series( favicons));
+        gulp.watch(projectcwd+config.watchIMG, gulp.series(images));
+
+        // Fonts
+        gulp.watch(projectcwd+config.watchFONTS, gulp.series(fonts));
+
+        // static
+        gulp.watch(projectcwd+config.watchSTATIC, gulp.series(browserSyncReload)).on('change', change);
+
+    } else {
+        gutil.log(gutil.colors.bold.blue('Path not found. Make sure you specified a project/theme!'));
+    }
+}
+
+// define complex tasks
+const build = gulp.series(fonts, favicons, images, styles, bundle, scripts );
+const watch = gulp.parallel(browserSync, watchFiles);
+
+exports.build = build;
+exports.default = watch;

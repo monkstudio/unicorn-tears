@@ -1,101 +1,77 @@
-## ✨ Usage @ Monk
-- Run backupbuddy to make a new project on the server
-- Activate unicorn-tears if it isn't already
-- SSH into Phoenix: ``ssh monk@phoenix.local; ``
-- Run gulp by typing ``unicorn-tears --project=PROJECTNAME`` in the terminal
-- Alternatively you can run gulp from your local machine if you are already SSH'd in and cd into /Volumes/devserver
-- Once gulp starts you can access the project site by going to ``192.168.0.77:__PORTNUMBER__`` if in the office, or ``mnk.nu:__PORTNUMBER__`` remotely.
-- If everything is working properly gulp should be running and watching for changes.
+```
+                    . . . .
+                    ,`,`,`,`,
+. . . .               `\`\`\`\;
+`\`\`\`\`,            ~|;!;!;\!
+ ~\;\;\;\|\          (--,!!!~`!       .
+(--,\\\===~\         (--,|||~`!     ./
+ (--,\\\===~\         `,-,~,=,:. _,//
+  (--,\\\==~`\        ~-=~-.---|\;/J,
+   (--,\\\((```==.    ~'`~/       a |
+     (-,.\\('('(`\\.  ~'=~|     \_.  \        ⋆ ✢ ✣ ✤ ✥ ✦ ✧ ✩ ✪ ✫ ✬ ✭
+        (,--(,(,(,'\\. ~'=|       \\_;>  --   ✨ The one gulpfile to rule them all ✨
+          (,-( ,(,(,;\\ ~=/        \          ✧ ✩ ✪ ✫ ✬ ✭ ✮ ✯ ✰ ★ ✬ ✭
+          (,-/ (.(.(,;\\,/          )
+           (,--/,;,;,;,\\         ./------.
+             (==,-;-'`;'         /_,----`. \
+     ,.--_,__.-'                    `--.  ` \
+    (='~-_,--/        ,       ,!,___--. \  \_)
+   (-/~(     |         \   ,_-         | ) /_|
+   (~/((\    )\._,      |-'         _,/ /
+    \\))))  /   ./~.    |           \_\;
+ ,__/////  /   /    )  /
+  '===~'   |  |    (, <.
+           / /       \. \
+         _/ /          \_\
+         / /            \ \
+        /_!/             >_\
 
-####Gulp ARGS:
-- ``--project=__PROJECTNAME__ ``  
+           o                    _/_
+ , , _ _  ,  _, __ _   _ _      /  _  __,  _   (
+(_/_/ / /_(_(__(_)/ (_/ / /_---(__(/_(_/(_/ (_/_)_
+
+_,     _   ,_   ,    .  _,_ ,__,    // 2 . 0 . 0
+ (_/__(/__/ (__/_)__/__(_/_/ / (_
+
+```
+
+## ✨ Usage
+This file is intended to be used with the unicorn-tears-theme['https://github.com/monkstudio/unicorn-tears-theme.git'] for WordPress, however it was built to be scalable to be used with hopefully most projects.
+
+Unlike traditional gulp workflows, you can run this file from one location, and use it to service many directories with ease.
+
+## ✨ Requirements
+- npm
+- gulp installed globally
+- Folder for web projects
+- a gulpfile.config.js in each project's directory, with paths configured to your project
+
+## ✨Installation
+1. Download `gulpfile.js` and `package.json` to your server
+2. Install dependencies by navigating into the folder with the terminal, and typing `npm install`
+3. Run gulp and pass in optional parameters from the terminal
+
+### Flags you can pass:
+- ``--project=__PROJECTNAME__ ``
     - Change ``__PROJECTNAME__`` to your project's folder name. Default is `base`.
-- ``--theme=__THEMENAME__`` 
+- ``--theme=__THEMENAME__``
     - Change ``__THEMENAME__`` to the theme name. Default is `unicorn-tears`.
 - ``--port=__PORTNUMBER__ ``
     - Set the port number with ``--port=__PORTNUMBER__``. Default is 3000.
-    
-**Important note: unicorn-tears now stores all assets in /assets. If an old wordpress or static theme is being updated, all assets will need to be copied to a new assets folder.
-Once gulp is restarted gulp should automatically start watching for changes.**
+- ``--cms=__wp__ ``
+    - You only need to change this if you are developing a non WP theme by passing cms as false. Default is `wp`.
 
+**Before starting work on a project make sure the paths in the gulpfile.config.js are configured to the appropriate locations.
+You can check  if the current working directory is correct by running gulp and checking the terminal feedback.**
 
-# ✨ Gulp tasks
+The `gulpfile.config.js` included here is a sample I use for all my WordPress projects- customise the paths to your own needs.
 
-Remember to pass in args to the gulp task for custom theme names, project names, or port numbers.
-eg. ``unicorn-tears --project=__PROJECTNAME__``
+## ✨ Philosophy
+This gulpfile builds a /dist folder inside the project directory as you develop, so there is no build process necesary when the project is ready to go live.
 
-### Default watch process
-``unicorn-tears``
-
-The default gulp process watches the project's /assets folder for scss and js changes and compiles the files to the root directory. Alongside this gulp will also watch all php and html files, and css and js (excluding script.js and style.css) files in the root.
-Browsersync will appear with a notice at the bottom right if connected successfully.
-If no args are passed gulp will default to watching the base install on the server.
-
-### Process sass files
-``unicorn-tears styles``
-
-All CSS is managed using sass in the scss folder. Gulp watches for changes to .scss files in this folder and outputs two files: style.css and style.min.css to the project root. 
-Any custom vendor CSS will have to be manually wired in to the scss folder. **This is intentional because more often than not manual edit of vendor CSS is necessary.**
-
-Source maps are generated inline in style.css. The theme will automatically link to style.css if on the Monk server, and style.min.css if not on the Monk server.
-
-### Bower
-``unicorn-tears bower``
-
-You can optionally use bower to download dependencies to the project. Update the bower.json file or save dependencies to the file from the terminal. This task will download the dependency, output the files to bower_components and copy all necessary js files to ``js/vendor`` for processing.
-
-### Process scripts
-``unicorn-tears scripts``
-
-The gulpfile processes all scripts in the ``/js`` folder. If you are using bower make sure all the files in vendor is actually what you need, or you might have unnecessary scripts in the minified files.
-
-- The task will concatenate all the scripts to ``script.js`` and ``script.min.js`` to the project root.
-- The theme automatically links to script.js if on the Monk server, and script.min.js if not on the Monk server.
-
-If you want the task to exclude any scripts in the js folder, simply prefix the file or folder with a _.
-
-
-
-## Tasks on the fly
-These tasks are meant to be run once and are not part of the default watch process.
-
-### Install and update npm packages
-``unicorn-tears npm``
-
-Run this task to update and install npm packages from package.json. This normally won't change but if you need to write custom gulp task for a specific project then this might help. In the event a dependency is deleted from the package.json file make sure to run  ``npm install`` in the gulpfile/package.json directory to restore working order.
-
-### Page speed insights
-``unicorn-tears psi``
-
-Run this task to get an overview of Google's page speed insights right in the terminal. Note the task will error out if the score is not over 70. 
-
-### Sprites
-``unicorn-tears sprites``
-
-To generate a spritesheet dump image assets into ``images/sprites`` (make sure they are jpg or png files) then run the task.
-The generated spritesheet will be moved to the images root while the css file will be moved to ``scss/media``.
-
-### Fontello
-``unicorn-tears fontello``
-
-Download your config.json from fontello and move it to ``fonts/fontello``.
-Run the task and all assets will be copied to the ``fonts`` directory. You'll have to copy the font css manually to the scss folder as you really only need the icon codes css to overwrite in ``scss/fonts/_fontello-codes.scss``.
-
-
-
-## Tasks to run at the end of the development process
-
-### Optimise images
-``unicorn-tears images``
-
-Move all image assets to ``images/dump`` in the theme folder and run the task. Gulp will optimise the files in ``images/dump`` and output all minified images to the ``images/`` root. Feel free to delete the dump folder after running this task.
-
-### Update favicons
-``unicorn-tears favicon-update``
-
-It might be a good idea to update favicon data for sizes etc. every once in a while.
-
-### Generate favicons
-``unicorn-tears favicons``
-
-Create a ``favicon.png`` for your project and move it to``images/dump``. Gulp will generate a folder of favicons to the ``images/`` root. The markup for the favicons is in header.php and automatically wires the favicons in meaning you don't need to do anything else. If you need to edit the favicon html just navigate to header.php. You can also set custom favicon output settings/sizes in the gulpfile and find html markup in the generated faviconData.json file.
+Things to note
+- Images will be automatically be resized and put in the `/dist` folder as they are being watched by gulp.
+- any favicon.png dropped in the `/src/images` folder will trigger the gulpfile to generate web optimised favicons and it's relevant markup, which is output to the terminal and also the favicons folder as html.
+- Font folders can be dropped in the `/src` folder, and this gulpfile will automatically flatten it's folder structure and copy over all woff and woff2 files to the `/dist` folder. Just remember to include the font sources in your CSS.
+- If you want to use ES6 js and plugins drop the vendor files in the `/src/js/imports` folder, make changes to the `imports.js` file, and the gulpfile will bundle it all to the `/dist/js` folder. You'll need to enqueue it in functions as a separate js file.
+- You can ask gulpfile to watch additional static files by changing the `gulpfile.config.js` file. By default, it watches all `.css`, `.html`, and `.php` files in the project folder.
