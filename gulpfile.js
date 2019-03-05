@@ -60,6 +60,7 @@ const   gulp            = require('gulp'),
         buffer          = require('vinyl-buffer'),
         gradient        = require('gradient-string'),
         assetManifest   = require('gulp-asset-manifest'),
+        babel           = require('gulp-babel'),
 
         //get args
         project         = args.project || 'base',
@@ -283,6 +284,7 @@ function scripts() {
         .pipe(plumber({
             errorHandler: handleError
         }))
+        .pipe(babel({presets: [require.resolve('@babel/preset-env')]}))
         .pipe(concat('script.js'))
         .pipe(gulp.dest(projectcwd+config.jsDST))
         .pipe(rename({
