@@ -233,9 +233,10 @@ function plainCSS() {
             bundleName: 'styles',
             includeRelativePath: true
         }))
+        .pipe(gulp.dest(projectcwd+config.styleDST))
         .pipe(browsersync.stream())
         .on('end', function () {
-            gutil.log(gutil.colors.white('👑 Double rainbow all the way'));
+            gutil.log(gradient.atlas('🌈 Double rainbow all the way 🌈 '));
         });
 }
 
@@ -494,7 +495,7 @@ function watchFiles() {
 
         // CSS
         gulp.watch(projectcwd+config.watchSCSS, gulp.series(scss,styles)).on('change', change);
-        gulp.watch(projectcwd+config.watchCSS, gulp.series(plainCSS,browserSyncReload)).on('change', change);
+        gulp.watch(projectcwd+config.watchCSS, gulp.series(plainCSS)).on('change', change);
 
         // Images
         gulp.watch(projectcwd+config.watchFAVICON, gulp.series( favicons));
