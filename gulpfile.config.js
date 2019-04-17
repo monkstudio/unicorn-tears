@@ -5,8 +5,8 @@ module.exports = {
 	projectDirectory: projectDirectory,
 	faviconFile: '/src/faviconData.json',
 
-	// CSS
-	plainstyleSRC:'/src/css/**/*.css',
+	// Sass
+	plainstyleSRC:'/**/!(style|*.min)*.css',
 	styleSRC:'/src/scss/**/*.scss',
 	styleDST:'/dist/css',
 	styleCompiled:'/dist/css/style.css',
@@ -34,7 +34,7 @@ module.exports = {
 	watchJS:'/src/js/!(imports)**',
 	watchJSIMPORTS:'/src/js/imports/**/*.js',
 	watchSCSS:'/src/scss/**/*.scss',
-	watchCSS:'/src/css/**/*.css',
+	watchCSS:'/!(dist)/**/*.css',
 	watchIMG:'/src/images/*.+(png|jpg|jpeg|gif|svg)',
 	watchFONTS:'/src/fonts/*',
 	watchFAVICON:'/src/images/favicon.png',

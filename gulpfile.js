@@ -278,9 +278,9 @@ function scripts() {
         projectcwd + config.jsSRC + '/**/!(base)*.js',
         projectcwd + config.jsSRC + '/base.js',
 
-        '!' +  projectcwd + config.jsSRC + '/**/_*/**',
-        '!' +  projectcwd + config.jsSRC + '/**/_*',
-        '!' +  projectcwd + config.jsSRC + '/**/imports/**'
+        '!' +  projectcwd + config.jsSRC + '/archive/**',
+        // '!' +  projectcwd + config.jsSRC + '/**/_*',
+        // '!' +  projectcwd + config.jsSRC + '/**/imports/**'
     ], { allowEmpty: true })
         .pipe(plumber({
             errorHandler: handleError
