@@ -201,7 +201,8 @@ function styles() {
         .pipe(assetManifest({
             manifestFile: projectcwd + config.manifestPath,
             bundleName: 'styles',
-            includeRelativePath: true
+            includeRelativePath: false,
+            pathPrepend: '/wp-content/themes/' + theme + '/dist/css/'
         }))
         .pipe(gulp.dest(projectcwd + config.styleDST))
         .pipe(browsersync.stream())
@@ -231,7 +232,8 @@ function plainCSS() {
         .pipe(assetManifest({
             manifestFile: projectcwd + config.manifestPath,
             bundleName: 'styles',
-            includeRelativePath: true
+            includeRelativePath: false,
+            pathPrepend: '/wp-content/themes/' + theme + '/dist/css/'
         }))
         .pipe(gulp.dest(projectcwd+config.styleDST))
         .pipe(browsersync.stream())
@@ -265,7 +267,8 @@ function bundle()  {
         .pipe(assetManifest({
             manifestFile: projectcwd + config.manifestPath,
             bundleName: 'imports',
-            includeRelativePath: true
+            includeRelativePath: false,
+            pathPrepend: '/wp-content/themes/' + theme + '/dist/js/'
         }))
         .pipe(gulp.dest(projectcwd+config.jsDST))
         .pipe(browsersync.stream())
@@ -295,7 +298,8 @@ function scripts() {
         .pipe(assetManifest({
             manifestFile: projectcwd + config.manifestPath,
             bundleName: 'js',
-            includeRelativePath: true
+            includeRelativePath: false,
+            pathPrepend: '/wp-content/themes/' + theme + '/dist/js/'
         }))
         .pipe(gulp.dest(projectcwd+config.jsDST))
         .pipe(browsersync.stream())
@@ -335,7 +339,8 @@ function images() {
         .pipe(assetManifest({
             manifestFile: projectcwd + config.manifestPath,
             bundleName: 'images',
-            includeRelativePath: true
+            includeRelativePath: false,
+            pathPrepend: '/wp-content/themes/' + theme + '/dist/images/'
         }))
         .pipe(gulp.dest(projectcwd + config.imgDST))
         .on('end', function () {
@@ -457,7 +462,8 @@ function fonts() {
         .pipe(assetManifest({
             manifestFile: projectcwd + config.manifestPath,
             bundleName: 'fonts',
-            includeRelativePath: true
+            includeRelativePath: false,
+            pathPrepend: '/wp-content/themes/' + theme + '/dist/fonts/'
         }))
         .pipe(gulp.dest(projectcwd + config.woffDST))
         .pipe(browsersync.stream())
