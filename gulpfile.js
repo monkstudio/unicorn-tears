@@ -68,17 +68,21 @@ const   gulp            = require('gulp'),
         theme           = args.theme || 'unicorn-tears',
         url             = project + '.mnk.nu',
         port            = args.port || '3000',
-        cwd             = '/devserver/' + project + '/public_html';
+        configFile      = args.config || '',
+        root            = args.root || 'public_html',
+        cwd             = '/devserver/' + project + '/' + root;
 
         //get the project directory
         if ( cms === 'wp') {
 var     projectcwd = cwd + '/wp-content/themes/' + theme;
+        }  else if ( cms === 'plugin') {
+var     projectcwd = cwd + '/wp-content/plugins/' + theme;
         } else {
-var     projectcwd      = cwd;
+var     projectcwd = cwd;
         }
 
-        //now that we finally have the project director, let's get the config files
-const   config          = require(projectcwd + '/gulpfile.config.js'),
+        //now that we finally have the project directory, let's get the config files
+const   config          = require(projectcwd + '/gulpfile'+configFile+'.config.js'),
         faviconDataFile = projectcwd + config.faviconFile;
 
 
@@ -191,19 +195,19 @@ function scss() {
 //secondly-- compile minified style.min.css to project root
 function styles() {
     return gulp.src(projectcwd + config.styleCompiled, {
-        allowEmpty: true
+        allowEmpty: false
 	})
         .pipe(rename({ suffix: '.min' }))
         .pipe(cleanCSS({ debug: true }, function (details) {
             gutil.log(gutil.colors.red(details.name + '(original file size): ' + details.stats.originalSize));
             gutil.log(gutil.colors.green(details.name + '(minified file size): ' + details.stats.minifiedSize));
         }))
-        .pipe(assetManifest({
-            manifestFile: projectcwd + config.manifestPath,
-            bundleName: 'styles',
-            includeRelativePath: false,
-            pathPrepend: '/wp-content/themes/' + theme + '/dist/css/'
-        }))
+        // .pipe(assetManifest({
+        //     manifestFile: projectcwd + config.manifestPath,
+        //     bundleName: 'styles',
+        //     includeRelativePath: false,
+        //     pathPrepend: '/wp-content/themes/' + theme + '/dist/css/'
+        // }))
         .pipe(gulp.dest(projectcwd + config.styleDST))
         .pipe(browsersync.stream())
         .on('end', function () {
@@ -229,12 +233,12 @@ function plainCSS() {
             errorHandler: handleError
         }))
         .pipe(autoprefixer())
-        .pipe(assetManifest({
-            manifestFile: projectcwd + config.manifestPath,
-            bundleName: 'styles',
-            includeRelativePath: false,
-            pathPrepend: '/wp-content/themes/' + theme + '/dist/css/'
-        }))
+        // .pipe(assetManifest({
+        //     manifestFile: projectcwd + config.manifestPath,
+        //     bundleName: 'styles',
+        //     includeRelativePath: false,
+        //     pathPrepend: '/wp-content/themes/' + theme + '/dist/css/'
+        // }))
         .pipe(gulp.dest(projectcwd+config.styleDST))
         .pipe(browsersync.stream())
         .on('end', function () {
@@ -252,24 +256,24 @@ Concatenates regular js as script.js
 ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥
 ♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡
 */
-//bundle es6 scripts
+//bundle scripts
 function bundle()  {
     return browserify({
         entries: projectcwd + config.jsImports, debug: true
     })
         .transform('babelify', { presets: ['@babel/preset-env'] })
         .bundle()
-        .pipe(source('imports.js'))
+        .pipe(source('bundle.min.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init())
         .pipe(uglify())
-        .pipe(sourcemaps.write('imports.map'))
-        .pipe(assetManifest({
-            manifestFile: projectcwd + config.manifestPath,
-            bundleName: 'imports',
-            includeRelativePath: false,
-            pathPrepend: '/wp-content/themes/' + theme + '/dist/js/'
-        }))
+        .pipe(sourcemaps.write('bundle.min.map'))
+        // .pipe(assetManifest({
+        //     manifestFile: projectcwd + config.manifestPath,
+        //     bundleName: 'imports',
+        //     includeRelativePath: false,
+        //     pathPrepend: '/wp-content/themes/' + theme + '/dist/js/'
+        // }))
         .pipe(gulp.dest(projectcwd+config.jsDST))
         .pipe(browsersync.stream())
 }
@@ -295,12 +299,12 @@ function scripts() {
             suffix: '.min'
         }))
         .pipe(uglify())
-        .pipe(assetManifest({
-            manifestFile: projectcwd + config.manifestPath,
-            bundleName: 'js',
-            includeRelativePath: false,
-            pathPrepend: '/wp-content/themes/' + theme + '/dist/js/'
-        }))
+        // .pipe(assetManifest({
+        //     manifestFile: projectcwd + config.manifestPath,
+        //     bundleName: 'js',
+        //     includeRelativePath: false,
+        //     pathPrepend: '/wp-content/themes/' + theme + '/dist/js/'
+        // }))
         .pipe(gulp.dest(projectcwd+config.jsDST))
         .pipe(browsersync.stream())
         .on('end', function () {
@@ -336,12 +340,12 @@ function images() {
             svgoPlugins: [ {removeViewBox: false}, {removeUselessStrokeAndFill: false}],
             verbose: true
         }))
-        .pipe(assetManifest({
-            manifestFile: projectcwd + config.manifestPath,
-            bundleName: 'images',
-            includeRelativePath: false,
-            pathPrepend: '/wp-content/themes/' + theme + '/dist/images/'
-        }))
+        // .pipe(assetManifest({
+        //     manifestFile: projectcwd + config.manifestPath,
+        //     bundleName: 'images',
+        //     includeRelativePath: false,
+        //     pathPrepend: '/wp-content/themes/' + theme + '/dist/images/'
+        // }))
         .pipe(gulp.dest(projectcwd + config.imgDST))
         .on('end', function () {
             gutil.log(
@@ -459,12 +463,12 @@ Copy font files
 function fonts() {
 	return gulp.src(projectcwd + config.woffSRC)
         .pipe(rename({dirname: ''}))
-        .pipe(assetManifest({
-            manifestFile: projectcwd + config.manifestPath,
-            bundleName: 'fonts',
-            includeRelativePath: false,
-            pathPrepend: '/wp-content/themes/' + theme + '/dist/fonts/'
-        }))
+        // .pipe(assetManifest({
+        //     manifestFile: projectcwd + config.manifestPath,
+        //     bundleName: 'fonts',
+        //     includeRelativePath: false,
+        //     pathPrepend: '/wp-content/themes/' + theme + '/dist/fonts/'
+        // }))
         .pipe(gulp.dest(projectcwd + config.woffDST))
         .pipe(browsersync.stream())
         .on('end', function () {
@@ -511,6 +515,7 @@ function watchFiles() {
         gulp.watch(projectcwd+config.watchFONTS, gulp.series(fonts));
 
         // static
+        gulp.watch(projectcwd+config.watchWML, gulp.series(browserSyncReload)).on('change', change);
         gulp.watch(projectcwd+config.watchSTATIC, gulp.series(browserSyncReload)).on('change', change);
 
     } else {
