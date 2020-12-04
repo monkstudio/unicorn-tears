@@ -1,4 +1,4 @@
-``
+```
                     . . . .
                     ,`,`,`,`,
 . . . .               `\`\`\`\;
@@ -33,7 +33,7 @@
 _,     _   ,_   ,    .  _,_ ,__,    // 2 . 0 . 0
  (_/__(/__/ (__/_)__/__(_/_/ / (_
 
-``
+```
 
 ## ✨ Usage
 This file is intended to be used with the unicorn-tears-theme['https://github.com/monkstudio/unicorn-tears-theme.git'] for WordPress, however it was built to be scalable to be used with hopefully most projects.
