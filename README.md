@@ -1,4 +1,4 @@
-```
+``
                     . . . .
                     ,`,`,`,`,
 . . . .               `\`\`\`\;
@@ -7,7 +7,7 @@
 (--,\\\===~\         (--,|||~`!     ./
  (--,\\\===~\         `,-,~,=,:. _,//
   (--,\\\==~`\        ~-=~-.---|\;/J,
-   (--,\\\((```==.    ~'`~/       a |
+   (--,\\\((``==.    ~'`~/       a |
      (-,.\\('('(`\\.  ~'=~|     \_.  \        ⋆ ✢ ✣ ✤ ✥ ✦ ✧ ✩ ✪ ✫ ✬ ✭
         (,--(,(,(,'\\. ~'=|       \\_;>  --   ✨ The one gulpfile to rule them all ✨
           (,-( ,(,(,;\\ ~=/        \          ✧ ✩ ✪ ✫ ✬ ✭ ✮ ✯ ✰ ★ ✬ ✭
@@ -33,7 +33,7 @@
 _,     _   ,_   ,    .  _,_ ,__,    // 2 . 0 . 0
  (_/__(/__/ (__/_)__/__(_/_/ / (_
 
-```
+``
 
 ## ✨ Usage
 This file is intended to be used with the unicorn-tears-theme['https://github.com/monkstudio/unicorn-tears-theme.git'] for WordPress, however it was built to be scalable to be used with hopefully most projects.
@@ -52,16 +52,44 @@ Unlike traditional gulp workflows, you can run this file from one location, and 
 3. Run gulp and pass in optional parameters from the terminal
 
 ### Flags you can pass:
-- ``--project=__PROJECTNAME__ ``
-    - Change ``__PROJECTNAME__`` to your project's folder name. Default is `base`.
-- ``--theme=__THEMENAME__``
-    - Change ``__THEMENAME__`` to the theme name. Default is `unicorn-tears`.
-- ``--port=__PORTNUMBER__ ``
-    - Set the port number with ``--port=__PORTNUMBER__``. Default is 3000.
-- ``--cms=__wp__ ``
-    - You only need to change this if you are developing a non WP theme by passing cms as false. Default is `wp`.
 
-**Before starting work on a project make sure the paths in the gulpfile.config.js are configured to the appropriate locations.
+- `--project=__PROJECTNAME__ `
+    - *probably required*
+    - Pass in the project folder's root directory.
+    - Default: `base`
+- `--theme=__THEMENAME__`
+    - *probably required*
+    - Change `__THEMENAME__` to the project's active theme name
+    - Default: `unicorn-tears`.
+- `--projectType=__PROJECTTYPE__`
+    - *optional*
+    - Change `__PROJECTTYPE__` depending if the project is a wp theme, wp plugin, or static site.
+    - Default: `theme`
+    - Other options: `plugin` or `static`
+- `--port=__PORTNUMBER__ `
+    - *optional*
+    - Default: `3000`
+- `--ssl`
+    - *optional*
+    - Default: `false`
+    - Only pass in this flag if ssl is required
+- `--root`
+    - *optional*
+    - Default: `public_html`
+    - Pass in a custom path/folder name if the working directory should start from an alternative root directory
+- `--configFile`
+    - *optional*
+    - Default: will look for a gulpfile.config.js in the theme folder
+    - Optionally pass in a secondary custom config file in the project folder, with the following naming convention: `/gulpfile__FILENAME__.config.js`
+
+
+
+***Note: unicorn-tears will automatically fail if no config file is found in the project directory***
+
+*****Note: Before starting work on a project make sure a config file exists in the project folder and the paths in the config file are configured to the appropriate locations.
+
+unicorn-tears will automatically fail if no config file is found in the project directory!!!
+
 You can check  if the current working directory is correct by running gulp and checking the terminal feedback.**
 
 The `gulpfile.config.js` included here is a sample I use for all my WordPress projects- customise the paths to your own needs.

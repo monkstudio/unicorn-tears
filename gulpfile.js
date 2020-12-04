@@ -64,20 +64,21 @@ const   gulp            = require('gulp'),
 
         //get args
         project         = args.project || 'base',
-        cms             = args.cms || 'wp',
+        projectType     = args.projectType || 'wp',
         theme           = args.theme || 'unicorn-tears',
-        url             = project + '.mnk.nu',
+        ssl             = args.ssl || false,
+        url             = ssl ? 'https://' + project + '.mnk.nu' : project + '.mnk.nu',
         port            = args.port || '3000',
         configFile      = args.config || '',
         root            = args.root || 'public_html',
         cwd             = '/devserver/' + project + '/' + root;
 
         //get the project directory
-        if ( cms === 'wp') {
+        if ( projectType === 'theme') {
 var     projectcwd = cwd + '/wp-content/themes/' + theme;
-        }  else if ( cms === 'plugin') {
+        }  else if ( projectType === 'plugin') {
 var     projectcwd = cwd + '/wp-content/plugins/' + theme;
-        } else {
+        } else if ( projectType === 'static') {
 var     projectcwd = cwd;
         }
 
