@@ -64,7 +64,7 @@ const   gulp            = require('gulp'),
 
         //get args
         project         = args.project || 'base',
-        projectType     = args.projectType || 'wp',
+        projectType     = args.projectType || 'theme',
         theme           = args.theme || 'unicorn-tears',
         ssl             = args.ssl || false,
         url             = ssl ? 'https://' + project + '.mnk.nu' : project + '.mnk.nu',
@@ -78,7 +78,7 @@ const   gulp            = require('gulp'),
 var     projectcwd = cwd + '/wp-content/themes/' + theme;
         }  else if ( projectType === 'plugin') {
 var     projectcwd = cwd + '/wp-content/plugins/' + theme;
-        } else if ( projectType === 'static') {
+        } else {
 var     projectcwd = cwd;
         }
 
